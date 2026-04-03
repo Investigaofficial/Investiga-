@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investiga - Final Version</title>
+    <title>Investiga - Premium v3</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -13,38 +13,55 @@
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f2027, #2c5364); margin: 0; color: white; min-height: 100vh; -webkit-tap-highlight-color: transparent; }
         .container { width: 95%; max-width: 500px; margin: auto; padding: 15px 0; }
         .card { background: white; color: #333; padding: 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); margin-bottom: 20px; }
-        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-box { background: white; padding: 15px; border-radius: 12px; text-align: center; border-bottom: 4px solid var(--secondary); }
         .stat-box h4 { margin: 0; font-size: 11px; color: #666; text-transform: uppercase; }
         .stat-box p { margin: 5px 0 0; font-size: 18px; font-weight: bold; color: var(--dark); }
-
         .tabs { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 20px; padding-bottom: 5px; scrollbar-width: none; }
-        .tab-btn { white-space: nowrap; padding: 10px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-weight: 600; font-size: 12px; cursor: pointer; }
+        .tab-btn { white-space: nowrap; padding: 10px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; font-weight: 600; font-size: 11px; cursor: pointer; }
         .tab-btn.active { background: white; color: var(--dark); }
-
-        .plan-card { background: white; padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; position: relative; }
+        .plan-card { background: white; padding: 18px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; }
         .plan-card h3 { margin: 0; color: var(--primary); font-size: 22px; }
         .income-info { font-size: 13px; color: #444; margin: 8px 0; line-height: 1.6; }
         .bonus-tag { display: inline-block; background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-bottom: 10px; }
-
         input, select { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .btn-main { background: var(--secondary); color: white; }
-        .btn-support { background: #3498db; color: white; text-decoration: none; display: block; text-align: center; margin-top: 10px; }
-
-        #fake-noti { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: white; color: #333; padding: 10px 20px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 9999; font-size: 11px; transition: 0.5s; width: 80%; text-align: center; border: 1px solid var(--secondary); }
+        .admin-list-item { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--primary); font-size: 12px; color: #333; line-height: 1.6; }
         .section { display: none; }
         .active-section { display: block; }
-        
-        .admin-list-item { background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 12px; color: #333; }
         #pay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
+        #fake-noti { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: white; color: #333; padding: 10px 20px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 9999; font-size: 11px; transition: 0.5s; width: 80%; text-align: center; border: 1px solid var(--secondary); }
+
+        /* Floating Support Button Style */
+        .float-support {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 20px;
+            background-color: #3498db;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 24px;
+            border: 2px solid white;
+        }
     </style>
 </head>
 <body onload="checkLoginStatus(); startFakeNoti();">
 
-<div id="fake-noti">Investiga Management Active</div>
+<a href="mailto:supportinvestiga@gmail.com" class="float-support" title="Contact Support">
+   📩
+</a>
 
+<div id="fake-noti">Investiga Management Active</div>
 <div class="container">
     <div id="auth-section" style="display:none; margin-top: 40px;">
         <div id="signup-box" class="card">
@@ -52,7 +69,7 @@
             <input type="text" id="reg-name" placeholder="Full Name">
             <input type="number" id="reg-phone" placeholder="Phone Number">
             <button class="btn btn-main" onclick="handleSignUp()">Join Now</button>
-            <p style="text-align:center; font-size: 13px;">Have account? <span onclick="toggleAuth(false)" style="color:var(--primary); cursor:pointer; font-weight:bold;">Login</span></p>
+            <p style="text-align:center; font-size: 13px;">Have account? <span onclick="toggleAuth(false)" style="color:var(--primary); font-weight:bold;">Login</span></p>
         </div>
         <div id="login-box" class="card" style="display:none;">
             <h2 style="text-align:center;">Login</h2>
@@ -60,87 +77,37 @@
             <button class="btn btn-main" onclick="handleLogin()">Sign In</button>
         </div>
     </div>
-
     <div id="dashboard-page" style="display:none;">
         <div class="card" style="padding:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
             <span>User: <b id="display-name">...</b></span>
             <button onclick="logout()" style="background:#e74c3c; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">Logout</button>
         </div>
-
         <div id="claim-box" class="card" style="display:none; background:#e8f5e9; text-align:center;">
-            <p id="claim-text" style="font-weight:bold; color:#2e7d32; margin:0;"></p>
+            <p id="claim-text" style="font-weight:bold; color:#2e7d32; margin:0;">Profit Ready!</p>
             <button class="btn btn-main" style="margin-top:8px;" onclick="claimProfit()">COLLECT PROFIT</button>
         </div>
-
         <div class="stats-grid">
             <div class="stat-box"><h4>Balance</h4><p id="bal-val">Rs. 0</p></div>
             <div class="stat-box"><h4>Active Plan</h4><p id="plan-val" style="color:var(--accent);">None</p></div>
         </div>
-
         <div class="tabs">
             <button class="tab-btn active" id="btn-plans" onclick="openTab('plans')">Invest</button>
+            <button class="tab-btn" id="btn-history" onclick="openTab('history')">History</button>
+            <button class="tab-btn" id="btn-team" onclick="openTab('team')">Team</button>
             <button class="tab-btn" id="btn-refer" onclick="openTab('refer')">Refer</button>
             <button class="tab-btn" id="btn-withdraw" onclick="openTab('withdraw')">Withdraw</button>
-            <button class="tab-btn" id="btn-support" onclick="openTab('support')">Help</button>
             <button class="tab-btn" id="btn-adminPass" style="display:none; background:#d35400;" onclick="openTab('adminPass')">🔒 Admin</button>
         </div>
-
         <div id="plans-sec" class="section active-section"><div id="plan-list"></div></div>
-
-        <div id="refer-sec" class="section">
-            <div class="card" style="text-align:center;">
-                <h3>Refer & Earn Rs. 70</h3>
-                <p style="font-size:12px;">Bonus added when your friend activates a plan.</p>
-                <div id="refer-link" style="background:#f8f9fa; padding:10px; font-size:11px; margin-bottom:15px; border:1px dashed #aaa; word-break:break-all;">...</div>
-                <button class="btn btn-main" onclick="copyRefer()">Copy Link</button>
-            </div>
-        </div>
-
-        <div id="withdraw-sec" class="section">
-            <div class="card">
-                <h3>Withdrawal</h3>
-                <p style="font-size:11px; color:#c0392b; font-weight:bold;">Withdraw Limit: Fixed Rs. 1000</p>
-                <input type="number" id="w-amt" value="1000" readonly style="background:#eee;">
-                <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
-                <input type="text" id="w-account" placeholder="Account Number">
-                <input type="text" id="w-name" placeholder="Account Name">
-                <button class="btn btn-main" onclick="submitWithdraw()">Submit Request</button>
-            </div>
-        </div>
-
-        <div id="support-sec" class="section">
-            <div class="card" style="text-align:center;">
-                <h3>Support</h3>
-                <p><b>supportinvestiga@gmail.com</b></p>
-                <a href="mailto:supportinvestiga@gmail.com" class="btn btn-support">Send Email</a>
-            </div>
-        </div>
-
-        <div id="adminPass-sec" class="section">
-            <div id="admin-gate" class="card" style="text-align:center;">
-                <input type="password" id="admin-secret" placeholder="Key">
-                <button class="btn btn-main" onclick="unlockAdmin()">Unlock</button>
-            </div>
-            <div id="admin-panel" style="display:none;">
-                <div class="card"><h3>Pending Plans</h3><div id="pending-deposits-list"></div></div>
-                <div class="card"><h3>Withdrawals</h3><div id="pending-withdrawals-list"></div></div>
-                <div class="card"><h3>All Users</h3><div id="total-users-list"></div></div>
-            </div>
-        </div>
+        <div id="history-sec" class="section"><div class="card"><h3>History</h3><div id="user-history-list">No records.</div></div></div>
+        <div id="team-sec" class="section"><div class="card"><h3>My Team</h3><div id="user-team-list">No members.</div></div></div>
+        <div id="refer-sec" class="section"><div class="card" style="text-align:center;"><h3>Refer & Earn Rs. 100</h3><div id="refer-link" style="background:#f8f9fa; padding:10px; font-size:11px; border:1px dashed #aaa; word-break:break-all;">...</div><button class="btn btn-main" onclick="copyRefer()">Copy Link</button></div></div>
+        <div id="withdraw-sec" class="section"><div class="card"><h3>Withdrawal</h3><input type="number" id="w-amt" value="1000" readonly style="background:#eee;"><select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select><input type="text" id="w-account" placeholder="Account Number"><input type="text" id="w-name" placeholder="Account Name (Receiver)"><button class="btn btn-main" onclick="submitWithdraw()">Submit Request</button></div></div>
+        <div id="adminPass-sec" class="section"><div id="admin-gate" class="card" style="text-align:center;"><input type="password" id="admin-secret" placeholder="Key"><button class="btn btn-main" onclick="unlockAdmin()">Unlock</button></div><div id="admin-panel" style="display:none;"><div class="card"><h3>Deposits</h3><div id="pending-deposits-list"></div></div><div class="card"><h3>Withdrawal Requests</h3><div id="pending-withdrawals-list"></div></div><div class="card"><h3>All Users Details</h3><div id="total-users-list"></div></div></div></div>
     </div>
 </div>
-
-<div id="pay-modal">
-    <div class="card" style="width:85%; text-align:center;">
-        <h3 id="modal-plan-name">Payment</h3>
-        <p>Send to EasyPaisa: <b>03496865411</b></p>
-        <input type="text" id="pay-tid" placeholder="Transaction ID (TID)">
-        <button class="btn btn-main" onclick="confirmPayment()">Submit</button>
-        <button class="btn" style="background:#ddd;" onclick="closePayModal()">Cancel</button>
-    </div>
-</div>
-
-<script>
+<div id="pay-modal"><div class="card" style="width:85%; text-align:center;"><h3 id="modal-plan-name">Payment</h3><p>Send to EasyPaisa: <b>03496865411</b></p><input type="text" id="pay-tid" placeholder="Transaction ID (TID)"><button class="btn btn-main" onclick="confirmPayment()">Submit</button><button class="btn" style="background:#ddd;" onclick="closePayModal()">Cancel</button></div></div>
+    <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBwjPQAhpE-htrPIG5EYafXcsDMGV1x_-0",
       authDomain: "investiga-23a73.firebaseapp.com",
@@ -153,7 +120,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const ownerPhone = "03496865411";
-
     const plans = [
         {name: "Starter", price: 1450, daily: 80, total: 3600},
         {name: "Basic", price: 1950, daily: 110, total: 4950},
@@ -166,24 +132,6 @@
     let currentPhone = localStorage.getItem('inv_phone');
     let selectedPlanForPay = "";
 
-    function renderPlans() {
-        document.getElementById('plan-list').innerHTML = plans.map(p => {
-            const days = Math.floor(p.total / p.daily);
-            return `
-            <div class="plan-card">
-                <h3>${p.name}</h3>
-                <div class="bonus-tag">Bonus: Rs. ${(p.price >= 3000) ? 350 : 150}</div>
-                <div class="income-info">
-                    Daily: <b>Rs. ${p.daily}</b><br>
-                    Total Income: <b>Rs. ${p.total}</b><br>
-                    Duration: <b>${days} Days</b><br>
-                    Price: <b>Rs. ${p.price}</b>
-                </div>
-                <button class="btn btn-main" onclick="openPayModal('${p.name}', ${p.price})">Invest Now</button>
-            </div>`;
-        }).join('');
-    }
-
     function checkLoginStatus() {
         if(!currentPhone) { document.getElementById('auth-section').style.display = 'block'; } 
         else {
@@ -194,111 +142,111 @@
                 document.getElementById('display-name').innerText = user.name;
                 document.getElementById('bal-val').innerText = "Rs. " + Math.floor(user.balance || 0);
                 document.getElementById('plan-val').innerText = user.plan || "None";
-                document.getElementById('refer-link').innerText = window.location.origin + window.location.pathname + "?ref=" + currentPhone;
-                checkClaimStatus(user);
+                document.getElementById('refer-link').innerText = window.location.origin + window.location.pathname + "?ref=" + user.name.replace(/\s/g, '_') + "&id=" + currentPhone;
+                checkClaimStatus(user); loadHistory(user.history); loadTeam();
             });
             renderPlans();
         }
     }
 
-    function openPayModal(n, p) { selectedPlanForPay = n; document.getElementById('modal-plan-name').innerText = n + " - Rs. " + p; document.getElementById('pay-modal').style.display = 'flex'; }
-    function closePayModal() { document.getElementById('pay-modal').style.display = 'none'; }
+    function loadHistory(h) {
+        let html = ""; if(h) Object.values(h).reverse().forEach(x => { html += `<div class="admin-list-item"><span>${x.type}: Rs. ${x.amount}</span><br><small>${x.date}</small></div>`; });
+        document.getElementById('user-history-list').innerHTML = html || "No records.";
+    }
 
-    function confirmPayment() {
-        const tid = document.getElementById('pay-tid').value; if(!tid) return alert("Enter TID!");
-        db.ref('deposits/' + Date.now()).set({ phone: currentPhone, planName: selectedPlanForPay, tid: tid, status: "Pending" });
-        alert("TID Submitted!"); closePayModal();
+    function loadTeam() {
+        db.ref('users').once('value', s => {
+            let html = ""; s.forEach(c => { if(c.val().referredBy === currentPhone) html += `<div class="admin-list-item">👤 ${c.val().name}<br><small>Joined: ${c.val().joinedOn || 'N/A'}</small></div>`; });
+            document.getElementById('user-team-list').innerHTML = html || "No members.";
+        });
     }
 
     function submitWithdraw() {
         const amt = 1000;
         const method = document.getElementById('w-method').value, acc = document.getElementById('w-account').value, name = document.getElementById('w-name').value;
-        if(!method || !acc || !name) return alert("Fill all details!");
+        if(!acc || !name) return alert("Fill all details!");
         db.ref('users/' + currentPhone).once('value', s => {
-            const user = s.val(); if(user.balance < amt) return alert("Min Rs. 1000!");
-            db.ref('users/' + currentPhone).update({ balance: user.balance - amt });
-            db.ref('withdrawals/' + Date.now()).set({ phone: currentPhone, name: user.name, amount: amt, method: method, account: acc, accName: name, status: "Pending" });
-            alert("Requested!");
+            const u = s.val(); if(u.balance < amt) return alert("Min Rs. 1000 required!");
+            db.ref('users/' + currentPhone).update({ balance: u.balance - amt });
+            db.ref('users/' + currentPhone + '/history').push({ type: "Withdrawal", amount: amt, date: new Date().toLocaleDateString() });
+            db.ref('withdrawals/' + Date.now()).set({ 
+                phone: currentPhone, userName: u.name, amount: amt, method: method, account: acc, accName: name, status: "Pending" 
+            });
+            alert("Withdrawal Requested!");
         });
     }
 
     function loadAdminData() {
         db.ref('deposits').on('value', s => {
-            const data = s.val(); let html = "";
-            if(data) Object.keys(data).forEach(id => {
-                const d = data[id];
-                html += `<div class="admin-list-item">👤 ${d.phone}<br>📦 ${d.planName}<br>🆔 ${d.tid}<br><button class="btn btn-main" onclick="approvePlan('${id}', '${d.phone}', '${d.planName}')">Approve</button></div>`;
-            });
-            document.getElementById('pending-deposits-list').innerHTML = html || "None.";
+            let h = ""; s.forEach(c => { const d = c.val(); h += `<div class="admin-list-item">👤 ${d.phone}<br>📦 ${d.planName}<br>🆔 TID: ${d.tid}<br><button class="btn btn-main" onclick="approvePlan('${c.key}', '${d.phone}', '${d.planName}')">Approve</button></div>`; });
+            document.getElementById('pending-deposits-list').innerHTML = h || "None.";
         });
         db.ref('withdrawals').on('value', s => {
-            const data = s.val(); let html = "";
-            if(data) Object.keys(data).forEach(id => {
-                const w = data[id];
-                html += `<div class="admin-list-item">👤 ${w.phone}<br>💰 Rs. ${w.amount}<br><button class="btn btn-main" onclick="manageWithdraw('${id}', 'Approved')">Paid</button></div>`;
+            let h = ""; s.forEach(c => { const w = c.val(); 
+                h += `<div class="admin-list-item"><b>User: ${w.userName}</b> (${w.phone})<br>💰 Amount: Rs. ${w.amount}<br>🏦 Method: ${w.method}<br>💳 Acc: ${w.account}<br>👤 Name: ${w.accName}<br><button class="btn btn-main" onclick="db.ref('withdrawals/${c.key}').remove(); alert('Paid!')">Mark Paid</button></div>`;
             });
-            document.getElementById('pending-withdrawals-list').innerHTML = html || "None.";
+            document.getElementById('pending-withdrawals-list').innerHTML = h || "None.";
         });
         db.ref('users').on('value', s => {
-            const data = s.val(); let html = "";
-            if(data) Object.keys(data).forEach(key => { const u = data[key]; html += `<div class="admin-list-item"><b>${u.name}</b> (${key})<br>💰 Rs. ${Math.floor(u.balance)}</div>`; });
-            document.getElementById('total-users-list').innerHTML = html || "None.";
+            let h = ""; s.forEach(c => { const u = c.val();
+                h += `<div class="admin-list-item"><b>${u.name}</b> (${c.key})<br>💰 Bal: Rs. ${Math.floor(u.balance)}<br>📦 Plan: ${u.plan}<br>🔗 RefBy: ${u.referredBy || 'Direct'}</div>`;
+            });
+            document.getElementById('total-users-list').innerHTML = h || "None.";
         });
     }
 
-    function approvePlan(depId, userPhone, planName) {
-        const p = plans.find(x => x.name === planName);
-        db.ref('users/' + userPhone).once('value', s => {
-            const userData = s.val();
-            db.ref('users/' + userPhone).update({ plan: planName, planActiveDate: Date.now(), lastIncomeDate: Date.now() });
-            db.ref('users/' + userPhone + '/balance').transaction(b => (b || 0) + (p.price >= 3000 ? 350 : 150));
-            if(userData.referredBy && !userData.referBonusPaid) {
-                db.ref('users/' + userData.referredBy + '/balance').transaction(b => (b || 0) + 70);
-                db.ref('users/' + userPhone).update({ referBonusPaid: true });
+    function approvePlan(id, ph, pn) {
+        const p = plans.find(x => x.name === pn); const bonus = p.price >= 3000 ? 350 : 150;
+        db.ref('users/' + ph).once('value', s => {
+            const u = s.val(); db.ref('users/' + ph).update({ plan: pn, planActiveDate: Date.now(), lastIncomeDate: Date.now() });
+            db.ref('users/' + ph + '/balance').transaction(b => (b || 0) + bonus);
+            db.ref('users/' + ph + '/history').push({ type: "Plan Bonus", amount: bonus, date: new Date().toLocaleDateString() });
+            if(u.referredBy && !u.referBonusPaid) {
+                db.ref('users/' + u.referredBy + '/balance').transaction(b => (b || 0) + 100);
+                db.ref('users/' + u.referredBy + '/history').push({ type: "Referral Bonus", amount: 100, date: new Date().toLocaleDateString() });
+                db.ref('users/' + ph).update({ referBonusPaid: true });
             }
-            db.ref('deposits/' + depId).remove();
-            alert("Activated!");
-        });
-    }
-
-    function manageWithdraw(id, status) { db.ref('withdrawals/' + id).remove(); alert("Done!"); }
-
-    function checkClaimStatus(user) {
-        if(!user.plan || user.plan === "None") return;
-        const last = user.lastIncomeDate || user.planActiveDate;
-        if(Date.now() - last >= 86400000) { document.getElementById('claim-box').style.display = 'block'; document.getElementById('claim-text').innerText = "Profit Ready!"; } 
-        else { document.getElementById('claim-box').style.display = 'none'; }
-    }
-
-    function claimProfit() {
-        db.ref('users/' + currentPhone).once('value', s => {
-            const user = s.val(); const p = plans.find(x => x.name === user.plan);
-            db.ref('users/' + currentPhone).update({ balance: user.balance + p.daily, lastIncomeDate: Date.now() });
-            alert("Collected!");
+            db.ref('deposits/' + id).remove(); alert("Activated!");
         });
     }
 
     function handleSignUp() {
         const n = document.getElementById('reg-name').value, p = document.getElementById('reg-phone').value;
-        const ref = new URLSearchParams(window.location.search).get('ref');
+        const refId = new URLSearchParams(window.location.search).get('id');
         if(!n || !p) return alert("Fill details");
-        const userData = { name: n, balance: 0, plan: "None" };
-        if(ref) userData.referredBy = ref;
-        db.ref('users/' + p).set(userData).then(() => { localStorage.setItem('inv_phone', p); location.reload(); });
+        db.ref('users/' + p).once('value', s => {
+            if(s.exists()) return alert("Already registered!");
+            const userData = { name: n, balance: 0, plan: "None", joinedOn: new Date().toLocaleDateString() };
+            if(refId && refId !== p) userData.referredBy = refId;
+            db.ref('users/' + p).set(userData).then(() => { localStorage.setItem('inv_phone', p); location.reload(); });
+        });
     }
 
-    function handleLogin() {
-        const p = document.getElementById('login-phone').value;
-        db.ref('users/' + p).once('value', s => { if(s.exists()){ localStorage.setItem('inv_phone', p); location.reload(); } else alert("No account!"); });
+    function claimProfit() {
+        db.ref('users/' + currentPhone).once('value', s => {
+            const u = s.val(); const p = plans.find(x => x.name === u.plan);
+            db.ref('users/' + currentPhone).update({ balance: u.balance + p.daily, lastIncomeDate: Date.now() });
+            db.ref('users/' + currentPhone + '/history').push({ type: "Daily Profit", amount: p.daily, date: new Date().toLocaleDateString() });
+            alert("Collected!");
+        });
     }
 
+    function renderPlans() {
+        document.getElementById('plan-list').innerHTML = plans.map(p => {
+            return `<div class="plan-card"><h3>${p.name}</h3><div class="bonus-tag">Bonus: Rs. ${(p.price >= 3000) ? 350 : 150}</div><div class="income-info">Daily: <b>Rs. ${p.daily}</b><br>Total: <b>Rs. ${p.total}</b><br>Price: <b>Rs. ${p.price}</b></div><button class="btn btn-main" onclick="openPayModal('${p.name}', ${p.price})">Invest Now</button></div>`;
+        }).join('');
+    }
+    function checkClaimStatus(u) { if(!u.plan || u.plan === "None") return; const last = u.lastIncomeDate || u.planActiveDate; if(Date.now() - last >= 86400000) document.getElementById('claim-box').style.display = 'block'; else document.getElementById('claim-box').style.display = 'none'; }
+    function openPayModal(n, p) { selectedPlanForPay = n; document.getElementById('modal-plan-name').innerText = n + " - Rs. " + p; document.getElementById('pay-modal').style.display = 'flex'; }
+    function closePayModal() { document.getElementById('pay-modal').style.display = 'none'; }
+    function confirmPayment() { const tid = document.getElementById('pay-tid').value; if(!tid) return alert("Enter TID!"); db.ref('deposits/' + Date.now()).set({ phone: currentPhone, planName: selectedPlanForPay, tid: tid }); alert("Submitted!"); closePayModal(); }
+    function handleLogin() { const p = document.getElementById('login-phone').value; db.ref('users/' + p).once('value', s => { if(s.exists()){ localStorage.setItem('inv_phone', p); location.reload(); } else alert("No account!"); }); }
     function unlockAdmin() { if(document.getElementById('admin-secret').value === "admin786"){ document.getElementById('admin-gate').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Wrong!"); }
-    function openTab(t) { document.querySelectorAll('.section').forEach(s => s.style.display = 'none'); document.getElementById(t + '-sec').style.display = 'block'; }
-    function startFakeNoti() { setInterval(() => { document.getElementById('fake-noti').style.top = "20px"; setTimeout(() => document.getElementById('fake-noti').style.top = "-100px", 3000); }, 12000); }
     function logout() { localStorage.removeItem('inv_phone'); location.reload(); }
+    function openTab(t) { document.querySelectorAll('.section').forEach(s => s.style.display = 'none'); document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.getElementById(t + '-sec').style.display = 'block'; document.getElementById('btn-' + t).classList.add('active'); }
     function copyRefer() { navigator.clipboard.writeText(document.getElementById('refer-link').innerText); alert("Copied!"); }
+    function startFakeNoti() { setInterval(() => { document.getElementById('fake-noti').style.top = "20px"; setTimeout(() => document.getElementById('fake-noti').style.top = "-100px", 3000); }, 12000); }
     function toggleAuth(s) { document.getElementById('signup-box').style.display = s ? 'block' : 'none'; document.getElementById('login-box').style.display = s ? 'none' : 'block'; }
 </script>
 </body>
-  </html>
-  
+</html>
