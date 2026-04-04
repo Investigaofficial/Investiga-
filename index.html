@@ -32,34 +32,12 @@
         .active-section { display: block; }
         #pay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
         #fake-noti { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: white; color: #333; padding: 10px 20px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 9999; font-size: 11px; transition: 0.5s; width: 80%; text-align: center; border: 1px solid var(--secondary); }
-
-        /* Floating Support Button Style */
-        .float-support {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 30px;
-            right: 20px;
-            background-color: #3498db;
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            font-size: 24px;
-            border: 2px solid white;
-        }
+        .float-support { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 20px; background-color: #3498db; color: #FFF; border-radius: 50px; text-align: center; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); z-index: 9999; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 24px; border: 2px solid white; }
     </style>
 </head>
 <body onload="checkLoginStatus(); startFakeNoti();">
 
-<a href="mailto:supportinvestiga@gmail.com" class="float-support" title="Contact Support">
-   📩
-</a>
+<a href="mailto:supportinvestiga@gmail.com" class="float-support" title="Contact Support">📩</a>
 
 <div id="fake-noti">Investiga Management Active</div>
 <div class="container">
@@ -69,27 +47,32 @@
             <input type="text" id="reg-name" placeholder="Full Name">
             <input type="number" id="reg-phone" placeholder="Phone Number">
             <button class="btn btn-main" onclick="handleSignUp()">Join Now</button>
-            <p style="text-align:center; font-size: 13px;">Have account? <span onclick="toggleAuth(false)" style="color:var(--primary); font-weight:bold;">Login</span></p>
+            <p style="text-align:center; font-size: 13px;">Have account? <span onclick="toggleAuth(false)" style="color:var(--primary); font-weight:bold; cursor:pointer;">Login</span></p>
         </div>
         <div id="login-box" class="card" style="display:none;">
             <h2 style="text-align:center;">Login</h2>
             <input type="number" id="login-phone" placeholder="Phone Number">
             <button class="btn btn-main" onclick="handleLogin()">Sign In</button>
+            <p style="text-align:center; font-size: 13px;">New User? <span onclick="toggleAuth(true)" style="color:var(--primary); font-weight:bold; cursor:pointer;">Register</span></p>
         </div>
     </div>
+
     <div id="dashboard-page" style="display:none;">
         <div class="card" style="padding:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
             <span>User: <b id="display-name">...</b></span>
             <button onclick="logout()" style="background:#e74c3c; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:11px;">Logout</button>
         </div>
+
         <div id="claim-box" class="card" style="display:none; background:#e8f5e9; text-align:center;">
             <p id="claim-text" style="font-weight:bold; color:#2e7d32; margin:0;">Profit Ready!</p>
             <button class="btn btn-main" style="margin-top:8px;" onclick="claimProfit()">COLLECT PROFIT</button>
         </div>
+
         <div class="stats-grid">
             <div class="stat-box"><h4>Balance</h4><p id="bal-val">Rs. 0</p></div>
             <div class="stat-box"><h4>Active Plan</h4><p id="plan-val" style="color:var(--accent);">None</p></div>
         </div>
+
         <div class="tabs">
             <button class="tab-btn active" id="btn-plans" onclick="openTab('plans')">Invest</button>
             <button class="tab-btn" id="btn-history" onclick="openTab('history')">History</button>
@@ -98,16 +81,39 @@
             <button class="tab-btn" id="btn-withdraw" onclick="openTab('withdraw')">Withdraw</button>
             <button class="tab-btn" id="btn-adminPass" style="display:none; background:#d35400;" onclick="openTab('adminPass')">🔒 Admin</button>
         </div>
+
         <div id="plans-sec" class="section active-section"><div id="plan-list"></div></div>
         <div id="history-sec" class="section"><div class="card"><h3>History</h3><div id="user-history-list">No records.</div></div></div>
         <div id="team-sec" class="section"><div class="card"><h3>My Team</h3><div id="user-team-list">No members.</div></div></div>
         <div id="refer-sec" class="section"><div class="card" style="text-align:center;"><h3>Refer & Earn Rs. 100</h3><div id="refer-link" style="background:#f8f9fa; padding:10px; font-size:11px; border:1px dashed #aaa; word-break:break-all;">...</div><button class="btn btn-main" onclick="copyRefer()">Copy Link</button></div></div>
         <div id="withdraw-sec" class="section"><div class="card"><h3>Withdrawal</h3><input type="number" id="w-amt" value="1000" readonly style="background:#eee;"><select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select><input type="text" id="w-account" placeholder="Account Number"><input type="text" id="w-name" placeholder="Account Name (Receiver)"><button class="btn btn-main" onclick="submitWithdraw()">Submit Request</button></div></div>
-        <div id="adminPass-sec" class="section"><div id="admin-gate" class="card" style="text-align:center;"><input type="password" id="admin-secret" placeholder="Key"><button class="btn btn-main" onclick="unlockAdmin()">Unlock</button></div><div id="admin-panel" style="display:none;"><div class="card"><h3>Deposits</h3><div id="pending-deposits-list"></div></div><div class="card"><h3>Withdrawal Requests</h3><div id="pending-withdrawals-list"></div></div><div class="card"><h3>All Users Details</h3><div id="total-users-list"></div></div></div></div>
+        
+        <div id="adminPass-sec" class="section">
+            <div id="admin-gate" class="card" style="text-align:center;"><input type="password" id="admin-secret" placeholder="Key"><button class="btn btn-main" onclick="unlockAdmin()">Unlock</button></div>
+            <div id="admin-panel" style="display:none;">
+                <div class="card"><h3>Deposits</h3><div id="pending-deposits-list"></div></div>
+                <div class="card"><h3>Withdrawals</h3><div id="pending-withdrawals-list"></div></div>
+                <div class="card"><h3>All Users</h3><div id="total-users-list"></div></div>
+            </div>
+        </div>
     </div>
 </div>
-<div id="pay-modal"><div class="card" style="width:85%; text-align:center;"><h3 id="modal-plan-name">Payment</h3><p>Send to EasyPaisa: <b>03496865411</b></p><input type="text" id="pay-tid" placeholder="Transaction ID (TID)"><button class="btn btn-main" onclick="confirmPayment()">Submit</button><button class="btn" style="background:#ddd;" onclick="closePayModal()">Cancel</button></div></div>
-    <script>
+
+<div id="pay-modal">
+    <div class="card" style="width:90%; max-width:400px; text-align:center; padding: 25px;">
+        <h3 id="modal-plan-name" style="color:var(--primary);">Payment</h3>
+        <p style="font-size: 15px; margin: 10px 0;">Send to EasyPaisa:<br><b style="font-size: 20px; color: var(--secondary);">03496865411</b></p>
+        
+        <p style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; border: 1px solid #ffeeba;">
+            ⚠️ Payment send karke screenshot isi number (03496865411) par WhatsApp par lazmi share karein.
+        </p>
+
+        <input type="text" id="pay-tid" placeholder="Transaction ID (TID) yahan likhen">
+        <button class="btn btn-main" onclick="confirmPayment()">Submit TID</button>
+        <button class="btn" style="background:#ddd; color: #333;" onclick="closePayModal()">Cancel</button>
+    </div>
+                    </div>
+                    <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBwjPQAhpE-htrPIG5EYafXcsDMGV1x_-0",
       authDomain: "investiga-23a73.firebaseapp.com",
