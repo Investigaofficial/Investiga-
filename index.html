@@ -101,6 +101,9 @@
         <div id="adminPass-sec" class="section">
             <div id="admin-gate" class="card" style="text-align:center;"><input type="password" id="admin-secret" placeholder="Key"><button class="btn btn-main" onclick="unlockAdmin()">Unlock</button></div>
             <div id="admin-panel" style="display:none;">
+                <div class="card" style="background:#f1f8ff; border:1px solid var(--primary); text-align:center; padding:10px;">
+                    <h3 style="margin:0; color:var(--primary);">Total Registered Users: <span id="user-count-badge">0</span></h3>
+                </div>
                 <div class="card"><h3>Pending Deposits</h3><div id="pending-deposits-list"></div></div>
                 <div class="card"><h3>Pending Withdrawals</h3><div id="pending-withdrawals-list"></div></div>
                 <div class="card"><h3>All Users List</h3><div id="total-users-list"></div></div>
@@ -117,8 +120,10 @@
         <input type="text" id="pay-tid" placeholder="Transaction ID (TID)">
         <button class="btn btn-main" onclick="confirmPayment()">Submit TID</button>
         <button class="btn" style="background:#ddd;" onclick="closePayModal()">Cancel</button>
-    </div>                                                                                                                                                                                                                                                                         </div>
-    <script>
+    </div>
+</div>
+<script>
+    // Firebase Initialization
     const firebaseConfig = {
       apiKey: "AIzaSyBwjPQAhpE-htrPIG5EYafXcsDMGV1x_-0",
       authDomain: "investiga-23a73.firebaseapp.com",
@@ -176,6 +181,7 @@
         }).join('');
     }
 
+    // Admin Data Loading with User Counter
     function loadAdminData() {
         db.ref('deposits').on('value', s => {
             let h = ""; s.forEach(c => { const d = c.val(); h += `<div class="admin-list-item">👤 ${d.phone}<br>📦 ${d.planName}<br>🆔 TID: ${d.tid}<br><button class="btn btn-main" onclick="approvePlan('${c.key}', '${d.phone}', '${d.planName}')">Approve</button><button class="btn btn-reject" onclick="db.ref('deposits/${c.key}').remove()">Reject</button></div>`; });
@@ -189,15 +195,21 @@
             document.getElementById('pending-withdrawals-list').innerHTML = h || "No Withdrawals.";
         });
 
+        // User list and counter
         db.ref('users').on('value', s => {
-            let h = ""; s.forEach(c => { const u = c.val(); 
+            let h = ""; 
+            let count = 0;
+            s.forEach(c => { 
+                const u = c.val(); 
+                count++;
                 h += `<div class="admin-list-item"><b>${u.name}</b> (${c.key})<br>💰 Bal: Rs. ${Math.floor(u.balance)}<br>📦 Plan: ${u.plan}<br><button class="btn btn-reject" style="width:auto; padding:5px 10px;" onclick="deleteUser('${c.key}')">🗑️ Delete User</button></div>`; 
             });
+            document.getElementById('user-count-badge').innerText = count;
             document.getElementById('total-users-list').innerHTML = h || "No Users.";
         });
     }
 
-    function deleteUser(phone) { if(confirm("Delete user " + phone + "? This account will be removed permanently.")) { db.ref('users/' + phone).remove(); alert("Deleted!"); } }
+    function deleteUser(phone) { if(confirm("Delete user " + phone + "?")) { db.ref('users/' + phone).remove(); alert("Deleted!"); } }
     
     function rejectWithdrawal(id, ph, amt) { if(confirm("Reject? Money will be refunded.")) { db.ref('users/'+ph+'/balance').transaction(b=>(b||0)+amt); db.ref('withdrawals/'+id).remove(); } }
 
@@ -225,7 +237,6 @@
         });
     }
 
-    // Baaqi functions (Login, Claim, Tabs) same rahein gay pehle wale code ki tarah.
     function handleSignUp() { const n = document.getElementById('reg-name').value, p = document.getElementById('reg-phone').value; const refId = new URLSearchParams(window.location.search).get('id'); if(!n || !p) return alert("Details?"); db.ref('users/' + p).set({ name: n, balance: 0, plan: "None", referredBy: refId || "" }).then(() => { localStorage.setItem('inv_phone', p); location.reload(); }); }
     function handleLogin() { const p = document.getElementById('login-phone').value; db.ref('users/' + p).once('value', s => { if(s.exists()){ localStorage.setItem('inv_phone', p); location.reload(); } else alert("No account!"); }); }
     function unlockAdmin() { if(document.getElementById('admin-secret').value === "admin786"){ document.getElementById('admin-gate').style.display='none'; document.getElementById('admin-panel').style.display='block'; } else alert("Wrong!"); }
