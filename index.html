@@ -67,17 +67,6 @@
         .stat-box h4 { margin: 0; font-size: 13px; color: #777; letter-spacing: 1px; }
         .stat-box p { margin: 10px 0 0; font-size: 22px; font-weight: 700; color: var(--primary); }
 
-        /* --- TEAM & REF SECTION --- */
-        .card-dark { 
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); 
-            padding: 25px; border-radius: 30px; margin-bottom: 20px; 
-        }
-        .ref-link-ui { 
-            background: #f4f4f4; color: #444; padding: 15px; border-radius: 15px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-top: 15px; font-size: 11px; font-weight: 600; border: 1px solid #ddd;
-        }
-
         /* --- MARKET CARDS --- */
         .share-item { 
             background: #ffffff; color: #333; padding: 30px; border-radius: 35px; 
@@ -90,14 +79,20 @@
             color: #000; padding: 8px 20px; border-radius: 30px; font-size: 12px; font-weight: 800;
             box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
         }
+        .market-note { font-style: italic; color: #666; font-size: 11px; margin-top: 10px; display: block; }
+        .plan-limit { color: var(--danger); font-weight: bold; font-size: 12px; }
 
-        /* --- WITHDRAW CARD --- */
+        /* --- WITHDRAW & ADMIN UI --- */
         .withdraw-ui { 
             background: #ffffff; color: #333; padding: 40px 30px; border-radius: 40px; 
             border-top: 12px solid var(--danger); box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
+        .admin-box { 
+            background: #f1f2f6; border-left: 8px solid var(--primary); padding: 20px; 
+            border-radius: 20px; margin-bottom: 20px; color: #2f3542; font-size: 14px; line-height: 1.8;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
 
-        /* --- NAVIGATION TABS --- */
         .nav-tabs { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 30px; padding-bottom: 15px; scrollbar-width: none; }
         .nav-tabs::-webkit-scrollbar { display: none; }
         .t-btn { 
@@ -110,18 +105,10 @@
         .active-section { display: block; animation: slideUp 0.6s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- ADMIN RECORD STYLE --- */
-        .admin-box { 
-            background: #f1f2f6; border-left: 5px solid var(--primary); padding: 18px; 
-            border-radius: 20px; margin-bottom: 15px; color: #2f3542; font-size: 13px; line-height: 1.6;
-        }
-
-        /* --- MODAL STYLING --- */
         #payment-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.97); z-index: 5000; justify-content: center; align-items: center; 
         }
-        .trust-info { background: #f0fff4; color: #22543d; padding: 15px; border-radius: 18px; font-size: 12px; border: 1px solid #c6f6d5; margin: 15px 0; }
     </style>
 </head>
 <body onload="checkLoginStatus()">
@@ -135,12 +122,12 @@
                 <input type="number" id="reg-phone" placeholder="WhatsApp Number">
                 <input type="number" id="reg-ref" placeholder="Referral ID (Optional)">
                 <button class="btn btn-main" onclick="handleSignUp()">REGISTER NOW</button>
-                <p style="font-size: 14px; margin-top: 25px;">Already a member? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Login Here</span></p>
+                <p style="font-size: 14px; margin-top: 25px;">Already member? <span onclick="toggleAuth(false)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Login</span></p>
             </div>
             <div id="login-box" style="display:none;">
-                <input type="number" id="login-phone" placeholder="Your Phone Number">
+                <input type="number" id="login-phone" placeholder="Phone Number">
                 <button class="btn btn-main" onclick="handleLogin()">SIGN IN</button>
-                <p style="font-size: 14px; margin-top: 25px;">Don't have an account? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Register Here</span></p>
+                <p style="font-size: 14px; margin-top: 25px;">New? <span onclick="toggleAuth(true)" style="color:var(--gold); cursor:pointer; font-weight:bold;">Register</span></p>
             </div>
         </div>
     </div>
@@ -148,73 +135,57 @@
     <div id="dashboard-page" style="display:none;">
         <div class="header-box">
             <b style="color:var(--secondary); font-size: 18px;">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</b><br>
-            <small style="letter-spacing: 1px;">Trusted Halal Investment & Team Network</small>
+            <small style="letter-spacing: 1px;">Trusted Halal Investment Network</small>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
             <div><small style="color:#bbb;">Assalam-o-Alaikum,</small><div id="display-name" style="font-size:20px; font-weight:700;">...</div></div>
-            <button onclick="logout()" style="background:var(--danger); color:white; border:none; padding:10px 20px; border-radius:15px; font-size:12px; font-weight:700;">LOGOUT</button>
+            <button onclick="logout()" style="background:var(--danger); color:white; border:none; padding:10px 20px; border-radius:15px; font-weight:700;">LOGOUT</button>
         </div>
 
-        <div id="claim-box" style="display:none; background: linear-gradient(135deg, #11998e, #38ef7d); padding:25px; border-radius:30px; text-align:center; margin-bottom:25px; box-shadow: 0 15px 30px rgba(56, 239, 125, 0.4);">
+        <div id="claim-box" style="display:none; background: linear-gradient(135deg, #11998e, #38ef7d); padding:25px; border-radius:30px; text-align:center; margin-bottom:25px;">
             <p style="margin:0; font-weight:700; font-size:16px;">Mubarak! Aaj ka munafa mil chuka hai.</p>
-            <button class="btn" style="background:white; color:#27ae60; margin-top:15px; font-weight:800; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" onclick="claimProfit()">COLLECT MY PROFIT</button>
+            <button class="btn" style="background:white; color:#27ae60; margin-top:15px; font-weight:800;" onclick="claimProfit()">COLLECT PROFIT</button>
         </div>
 
         <div class="stat-grid">
-            <div class="stat-box"><h4>Your Balance</h4><p id="bal-val">Rs. 0</p></div>
-            <div class="stat-box"><h4>Active Share</h4><p id="plan-val" style="font-size:14px; color:var(--secondary);">No Asset</p></div>
+            <div class="stat-box"><h4>Balance</h4><p id="bal-val">Rs. 0</p></div>
+            <div class="stat-box"><h4>Asset</h4><p id="plan-val" style="font-size:14px; color:var(--secondary);">No Asset</p></div>
         </div>
 
         <div class="nav-tabs">
-            <button class="t-btn active" id="btn-plans" onclick="openTab('plans')">Trade Market</button>
-            <button class="t-btn" id="btn-team" onclick="openTab('team')">My Network</button>
+            <button class="t-btn active" id="btn-plans" onclick="openTab('plans')">Market</button>
+            <button class="t-btn" id="btn-team" onclick="openTab('team')">Team</button>
             <button class="t-btn" id="btn-withdraw" onclick="openTab('withdraw')">Cash Out</button>
             <button class="t-btn" id="btn-history" onclick="openTab('history')">Records</button>
-            <button class="t-btn" id="btn-admin" style="display:none; background:#e67e22;" onclick="openTab('admin')">Control Room</button>
+            <button class="t-btn" id="btn-admin" style="display:none; background:#e67e22;" onclick="openTab('admin')">Admin</button>
         </div>
 
         <div id="plans-sec" class="section active-section"><div id="plan-list"></div></div>
 
         <div id="team-sec" class="section">
-            <div class="card-dark">
-                <h4 style="margin:0 0 10px 0; color:var(--gold); font-size:18px;">Build Your Team</h4>
-                <p style="font-size:12px; color:#ccc; line-height:1.6;">Level 1 Commission: <b>10%</b> | Level 2: <b>5%</b> | Level 3: <b>2%</b>. Jitni bari team, utna bara munafa.</p>
-                <div class="ref-link-ui">
-                    <span id="ref-link-text">Fetching your link...</span>
-                    <button style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:10px; cursor:pointer; font-weight:bold;" onclick="copyRef()">COPY</button>
+            <div class="card-dark" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:20px;">
+                <h4 style="color:var(--gold);">Your Ref Link</h4>
+                <div style="background:#eee; color:#333; padding:10px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <span id="ref-link-text" style="font-size:10px;">Fetching...</span>
+                    <button onclick="copyRef()" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">COPY</button>
                 </div>
             </div>
-            <div class="withdraw-ui" style="padding:25px; color: #333;">
-                <h4 style="margin-top:0; border-bottom: 2px solid #eee; padding-bottom: 10px;">My Referrals</h4>
-                <div id="team-list-ui" style="font-size:13px; color:#555; max-height: 300px; overflow-y: auto;">No team members joined.</div>
+            <div class="withdraw-ui" style="margin-top:20px; color:#333;">
+                <h4>My Referrals</h4>
+                <div id="team-list-ui">No team yet.</div>
             </div>
         </div>
 
         <div id="withdraw-sec" class="section">
             <div class="withdraw-ui">
-                <h3 style="margin:0 0 25px 0; text-align:center; color:var(--primary); font-weight:700;">Withdrawal Request</h3>
-                <div style="background:#f8fff9; padding:20px; border-radius:20px; text-align:center; margin-bottom:25px; border:2px dashed var(--secondary);">
-                    Current Balance: <b id="avail-bal" style="color:var(--secondary); font-size:24px;">Rs. 0</b>
-                </div>
-                
-                <div style="background:#fff5f5; border:1px solid #feb2b2; padding:12px; border-radius:15px; margin-bottom:20px;">
-                    <p style="font-size:12px; color:#c53030; font-weight:700; margin:0; text-align:center;">
-                        NOTE: Withdraw Limit is fixed at exactly Rs. 1000.
-                    </p>
-                </div>
-
-                <input type="number" id="w-amt" value="1000" readonly style="background:#eee; cursor:not-allowed; text-align:center; font-weight:bold; font-size:20px; color:var(--primary);">
-                
-                <select id="w-method">
-                    <option value="EasyPaisa">EasyPaisa Account</option>
-                    <option value="JazzCash">JazzCash Account</option>
-                </select>
-                <input type="text" id="w-account" placeholder="Enter Account Number (03xxxxxxxxx)">
-                <input type="text" id="w-name" placeholder="Enter Account Title (Full Name)">
-                
-                <button class="btn" style="background:var(--danger); color:white; box-shadow:0 10px 0 #c0392b;" onclick="submitWithdraw()">REQUEST RS. 1000 WITHDRAW</button>
-                <p style="font-size:11px; color:#999; text-align:center; margin-top:20px;">Request will be approved by admin after verification.</p>
+                <h3 style="text-align:center; color:var(--primary);">Withdrawal</h3>
+                <p id="withdraw-limit-msg" style="text-align:center; font-size:12px; font-weight:bold;"></p>
+                <input type="number" id="w-amt" readonly style="text-align:center; font-weight:bold; font-size:20px;">
+                <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
+                <input type="text" id="w-account" placeholder="Account Number">
+                <input type="text" id="w-name" placeholder="Account Title">
+                <button class="btn" style="background:var(--danger); color:white;" onclick="submitWithdraw()">SUBMIT</button>
             </div>
         </div>
 
@@ -222,26 +193,21 @@
 
         <div id="admin-sec" class="section">
             <div id="admin-gate" class="auth-card">
-                <input type="password" id="admin-pass" placeholder="Admin Secret Key">
-                <button class="btn btn-main" onclick="unlockAdmin()">ACCESS ADMIN SUITE</button>
+                <input type="password" id="admin-pass" placeholder="Admin Key">
+                <button class="btn btn-main" onclick="unlockAdmin()">UNLOCK</button>
             </div>
             <div id="admin-panel" style="display:none;">
-                <div class="stat-box" style="margin-bottom:25px;">Total Community: <b id="user-count">0</b></div>
+                <div class="stat-box" style="margin-bottom:20px; background:var(--primary); color:white;">
+                    <h4 style="color:white;">Total Registered Users</h4>
+                    <p id="total-user-count" style="color:var(--gold); font-size:30px;">0</p>
+                </div>
                 
-                <div class="withdraw-ui" style="margin-bottom:25px; border-top-color:var(--secondary);">
-                    <h4 style="margin:0 0 15px 0;">New Deposits</h4>
-                    <div id="admin-deposits"></div>
-                </div>
-
-                <div class="withdraw-ui" style="margin-bottom:25px; border-top-color:var(--danger);">
-                    <h4 style="margin:0 0 15px 0;">Cash Requests (Detail View)</h4>
-                    <div id="admin-withdraws"></div>
-                </div>
-
-                <div class="withdraw-ui" style="border-top-color:var(--primary);">
-                    <h4 style="margin:0 0 15px 0;">Manage All Users</h4>
-                    <div id="admin-users"></div>
-                </div>
+                <h3 style="color:var(--gold);">Deposits</h3>
+                <div id="admin-deposits"></div>
+                <h3 style="color:var(--gold);">Withdraws</h3>
+                <div id="admin-withdraws"></div>
+                <h3 style="color:var(--gold);">User Management</h3>
+                <div id="admin-users"></div>
             </div>
         </div>
     </div>
@@ -249,21 +215,18 @@
 
 <div id="payment-modal">
     <div class="withdraw-ui" style="width:90%; max-width:420px;">
-        <h3 id="pay-title" style="margin-top:0; color:var(--secondary); font-weight:700;">Purchase Asset</h3>
-        <div style="background:#fffbea; color:#975a16; padding:18px; border-radius:20px; font-size:13px; margin-bottom:15px; border:1px solid #fef3c7; line-height:1.6;">
-            <b>Payment Instructions:</b><br>
-            Please send payment to <b>EasyPaisa: 03496865411</b><br><br>
-            <span style="color:#e53e3e; font-weight:800;">IMPORTANT:</span> Payment bhejnay ke baad isi number par WhatsApp par <b>Screen Shot</b> lazmi share karein.
+        <h3>Deposit Payment</h3>
+        <div style="background:#fffbea; padding:15px; border-radius:15px; font-size:13px; margin-bottom:15px; border:1px solid #fef3c7; color:#333;">
+            <b>Instructions:</b><br>
+            Send payment to <b>EasyPaisa: 03496865411</b><br><br>
+            <span style="color:red; font-weight:800;">Note:</span> Payment send kar ke isi number par WhatsApp par screenshot lazmi share karein. Payment verification ke baad plan active ho jaye ga.
         </div>
-        <div class="trust-info">
-            <b>Automatic System:</b> Verification hote hi system aapki investment <b>Khud ba khud (Automatically)</b> activate kar dega aur daily profit shuru ho jaye ga.
-        </div>
-        <input type="text" id="pay-tid" placeholder="Enter Transaction ID (TID)" style="margin-top:20px; border:2px solid #cbd5e0;">
-        <button class="btn btn-main" onclick="confirmPayment()">SUBMIT FOR AUTOMATION</button>
-        <button class="btn" style="background:#edf2f7; color:#4a5568; margin-top:10px; box-shadow:none;" onclick="document.getElementById('payment-modal').style.display='none'">CANCEL</button>
+        <input type="text" id="pay-tid" placeholder="Transaction ID (TID)">
+        <button class="btn btn-main" onclick="confirmPayment()">SUBMIT TID</button>
+        <button class="btn" onclick="document.getElementById('payment-modal').style.display='none'">CANCEL</button>
     </div>
-       <script>
-    // Firebase Setup
+                </div>
+    <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBwjPQAhpE-htrPIG5EYafXcsDMGV1x_-0",
       authDomain: "investiga-23a73.firebaseapp.com",
@@ -278,11 +241,11 @@
     const adminNum = "03496865411";
 
     const tradeShares = [
-        {name: "Lucky Cement Share", price: 1450, info: "Stable Market Value"},
-        {name: "HUBCO Power Share", price: 1950, info: "High Dividend Yield"},
-        {name: "Engro Corp Share", price: 2450, info: "Leading Agriculture Sector"},
-        {name: "Systems Ltd Share", price: 3050, info: "Top IT Export Company"},
-        {name: "Meezan Bank Share", price: 5050, info: "Islamic Finance Leader"}
+        {name: "Lucky Cement Share", price: 1450, note: "Market is showing strong bullish trend in construction sector."},
+        {name: "HUBCO Power Share", price: 1950, note: "Energy sector dividends are stable this quarter."},
+        {name: "Engro Corp Share", price: 2450, note: "Agricultural demand is pushing stock value higher."},
+        {name: "Systems Ltd Share", price: 3050, note: "IT Export growth is making this share a safe haven."},
+        {name: "Meezan Bank Share", price: 5050, note: "Top performing Islamic Banking stock in current market."}
     ];
 
     let myPhone = localStorage.getItem('inv_token');
@@ -290,8 +253,7 @@
 
     function checkLoginStatus() {
         const params = new URLSearchParams(window.location.search);
-        const refId = params.get('ref');
-        if(refId) document.getElementById('reg-ref').value = refId;
+        if(params.get('ref')) document.getElementById('reg-ref').value = params.get('ref');
 
         if(!myPhone) {
             document.getElementById('auth-section').style.display = 'block';
@@ -304,10 +266,25 @@
                 const data = snap.val(); if(!data) return;
                 document.getElementById('display-name').innerText = data.name;
                 document.getElementById('bal-val').innerText = "Rs. " + Math.floor(data.balance);
-                document.getElementById('avail-bal').innerText = "Rs. " + Math.floor(data.balance);
                 document.getElementById('plan-val').innerText = data.plan || "Inactive";
                 
-                checkProfitBox(data); 
+                const wInput = document.getElementById('w-amt');
+                const wLimitMsg = document.getElementById('withdraw-limit-msg');
+                if(!data.firstWithdrawDone) {
+                    wInput.value = 300;
+                    wLimitMsg.innerText = "Bonus Withdraw Limit: Rs. 300";
+                    wLimitMsg.style.color = "var(--secondary)";
+                } else {
+                    wInput.value = 1000;
+                    wLimitMsg.innerText = "Standard Withdraw Limit: Rs. 1000";
+                    wLimitMsg.style.color = "var(--danger)";
+                }
+
+                if(data.plan && data.plan !== "Inactive") {
+                    const last = data.lastIncomeDate || data.planActiveDate;
+                    if(Date.now() - last >= 86400000) document.getElementById('claim-box').style.display = 'block';
+                    else document.getElementById('claim-box').style.display = 'none';
+                }
                 renderHistory(data.history);
                 renderTeamList(myPhone);
             });
@@ -318,157 +295,100 @@
     function renderMarketCards() {
         let cards = "";
         tradeShares.forEach(s => {
-            cards += `
-            <div class="share-item">
-                <div class="tag-bonus">EARN RS. 200 BONUS</div>
-                <h3 style="margin:0; color:var(--primary); font-weight:700;">${s.name}</h3>
-                <p style="font-size:13px; color:#555; margin:12px 0; line-height:1.5;">
-                    Investment Required: <b>Rs. ${s.price}</b><br>
-                    Daily Nafa: <b>1% to 5%</b><br>
-                    Market Note: ${s.info}
-                </p>
-                <button class="btn btn-main" style="padding:15px; font-size:14px; box-shadow: 0 6px 0 #1e8449;" onclick="triggerPayment('${s.name}')">Activate Asset</button>
+            cards += `<div class="share-item">
+                <div class="tag-bonus" style="background:#27ae60; color:white; top:-30px;">Rs. 200 Activation Bonus</div>
+                <div class="tag-bonus" style="font-size:10px; right:5px;">1% - 5% Daily Profit</div>
+                <h3 style="margin:0; color:var(--primary);">${s.name}</h3>
+                <p style="margin:10px 0; font-size:14px;">Investment: <b>Rs. ${s.price}</b></p>
+                <span class="plan-limit">Plan Validity: 45 Days</span>
+                <span class="market-note"><b>Market Note:</b> ${s.note}</span>
+                <button class="btn btn-main" onclick="triggerPayment('${s.name}')">Activate Asset</button>
             </div>`;
         });
         document.getElementById('plan-list').innerHTML = cards;
     }
 
-    // --- STRICT WITHDRAWAL LOGIC (Fixed at 1000) ---
-    function submitWithdraw() {
-        const fixedAmt = 1000;
-        const method = document.getElementById('w-method').value;
-        const accNum = document.getElementById('w-account').value;
-        const accTitle = document.getElementById('w-name').value;
-
-        if(!accNum || !accTitle) return alert("Please fill account number and title!");
-
-        db.ref('users/' + myPhone).once('value', s => {
-            const user = s.val();
-            if(user.balance < fixedAmt) return alert("Withdrawal ke liye kam az kam Rs. 1000 balance hona zaruri hai!");
-
-            // Detailed data sent to admin
-            db.ref('users/' + myPhone).update({ balance: user.balance - fixedAmt }).then(() => {
-                db.ref('withdrawals/' + Date.now()).set({
-                    senderPhone: myPhone,
-                    senderName: user.name,
-                    amount: fixedAmt,
-                    payMethod: method,
-                    targetAccount: accNum,
-                    targetTitle: accTitle,
-                    requestDate: new Date().toLocaleString()
-                });
-
-                db.ref('users/' + myPhone + '/history').push({
-                    type: "Withdrawal Sent",
-                    amount: fixedAmt,
-                    date: new Date().toLocaleDateString()
-                });
-
-                alert("Request Submitted! Rs. 1000 aapke balance se kat gaye hain aur verification ke baad send kar diye jayenge.");
-                document.getElementById('w-account').value = "";
-                document.getElementById('w-name').value = "";
-            });
-        });
-    }
-
-    // --- ADMIN SUITE LOGIC ---
     function loadAdminDashboard() {
-        // Detailed Withdrawal Requests
-        db.ref('withdrawals').on('value', snap => {
-            let h = ""; snap.forEach(c => {
-                const w = c.val();
-                h += `
-                <div class="admin-box">
-                    <b style="font-size:15px; color:#c0392b;">Rs. ${w.amount} Request</b><br>
-                    <b>User:</b> ${w.senderName} (${w.senderPhone})<br>
-                    <b>Method:</b> ${w.payMethod}<br>
-                    <b>A/C Number:</b> ${w.targetAccount}<br>
-                    <b>A/C Title:</b> ${w.targetTitle}<br>
-                    <small>Time: ${w.requestDate}</small><br>
-                    <button class="btn-main" style="padding:6px 12px; font-size:11px; margin-top:10px; box-shadow:none;" onclick="markPaid('${c.key}')">Mark as Paid</button>
-                </div>`;
-            });
-            document.getElementById('admin-withdraws').innerHTML = h || "No requests found.";
-        });
-
-        // Deposits / Plan Activations
+        // Deposits with rejection
         db.ref('deposits').on('value', snap => {
             let h = ""; snap.forEach(c => {
                 const d = c.val();
-                h += `
-                <div class="admin-box">
-                    <b>Trader:</b> ${d.phone}<br><b>Asset:</b> ${d.plan}<br><b>TID:</b> ${d.tid}<br>
-                    <button class="btn-main" style="padding:6px 12px; font-size:11px; margin-top:8px; box-shadow:none;" onclick="approveTrade('${c.key}','${d.phone}','${d.plan}')">Approve & Automate</button>
-                </div>`;
+                h += `<div class="admin-box"><b>USER:</b> ${d.phone}<br><b>PLAN:</b> ${d.plan}<br><b>TID:</b> ${d.tid}<br><button style="background:green; color:white; border:none; padding:8px; border-radius:5px;" onclick="approveTrade('${c.key}','${d.phone}','${d.plan}')">Approve</button><button style="background:red; color:white; border:none; padding:8px; border-radius:5px; margin-left:10px;" onclick="rejectTrade('${c.key}','${d.phone}')">Reject</button></div>`;
             });
-            document.getElementById('admin-deposits').innerHTML = h || "No deposits pending.";
+            document.getElementById('admin-deposits').innerHTML = h || "No Deposits";
         });
 
-        db.ref('users').on('value', snap => {
-            let h = ""; let total = 0;
-            snap.forEach(c => {
-                total++; const u = c.val();
-                h += `<div class="admin-box"><b>${u.name}</b> (${c.key})<br>Current Bal: Rs. ${Math.floor(u.balance)}<br><button style="background:#e74c3c; color:white; border:none; padding:4px 10px; border-radius:8px; cursor:pointer;" onclick="deleteAcc('${c.key}')">Delete User</button></div>`;
+        // Withdraws with rejection & detailed info
+        db.ref('withdrawals').on('value', snap => {
+            let h = ""; snap.forEach(c => {
+                const w = c.val();
+                h += `<div class="admin-box"><b>USER:</b> ${w.senderPhone}<br><b>AMT:</b> Rs. ${w.amount}<br><b>METHOD:</b> ${w.payMethod}<br><b>ACC:</b> ${w.targetAccount}<br><b>TITLE:</b> ${w.targetTitle}<br><button style="background:green; color:white; border:none; padding:8px; border-radius:5px;" onclick="markPaid('${c.key}')">Mark Paid</button><button style="background:red; color:white; border:none; padding:8px; border-radius:5px; margin-left:10px;" onclick="rejectWithdraw('${c.key}','${w.senderPhone}',${w.amount})">Reject</button></div>`;
             });
-            document.getElementById('user-count').innerText = total;
+            document.getElementById('admin-withdraws').innerHTML = h || "No Withdrawals";
+        });
+
+        // Users and Total Count logic
+        db.ref('users').on('value', snap => {
+            let h = ""; let count = 0;
+            snap.forEach(c => {
+                count++;
+                const u = c.val();
+                h += `<div class="admin-box"><b>${u.name}</b> (${c.key})<br>Bal: Rs. ${Math.floor(u.balance)}<br>Plan: ${u.plan}<br>Ref: ${u.referrer || "None"}</div>`;
+            });
+            document.getElementById('total-user-count').innerText = count;
             document.getElementById('admin-users').innerHTML = h;
         });
+    }
+
+    function rejectTrade(id, ph) { if(confirm("Reject Deposit?")) db.ref('deposits/' + id).remove(); }
+    function rejectWithdraw(id, ph, amt) {
+        if(confirm("Reject & Refund?")) {
+            db.ref('users/' + ph).once('value', s => {
+                db.ref('users/' + ph).update({ balance: s.val().balance + amt, firstWithdrawDone: false });
+                db.ref('withdrawals/' + id).remove(); alert("Refunded!");
+            });
+        }
     }
 
     function approveTrade(id, userPh, pName) {
         db.ref('users/' + userPh).once('value', snap => {
             const u = snap.val();
-            db.ref('users/' + userPh).update({
-                plan: pName,
-                balance: (u.balance || 0) + 200,
-                planActiveDate: Date.now(),
-                lastIncomeDate: Date.now()
-            });
-            
-            // Commission Tracking (L1)
+            db.ref('users/' + userPh).update({ plan: pName, balance: (u.balance || 0) + 200, planActiveDate: Date.now(), lastIncomeDate: Date.now() });
             if(u.referrer) {
-                db.ref('users/' + u.referrer).once('value', rSnap => {
-                    if(rSnap.exists()) {
-                        const price = tradeShares.find(x => x.name === pName).price;
-                        const comm = price * 0.10; // Level 1 (10%)
-                        db.ref('users/' + u.referrer).update({ balance: rSnap.val().balance + comm });
-                        db.ref('users/' + u.referrer + '/history').push({ type: "Team Bonus (Level 1)", amount: comm.toFixed(2), date: new Date().toLocaleDateString() });
+                db.ref('users/' + u.referrer).once('value', rs => {
+                    if(rs.exists()) {
+                        const prc = tradeShares.find(x => x.name === pName).price;
+                        db.ref('users/' + u.referrer).update({ balance: rs.val().balance + (prc * 0.10) });
                     }
                 });
             }
-            db.ref('deposits/' + id).remove();
-            alert("Trade Activated Automatically!");
+            db.ref('deposits/' + id).remove(); alert("Plan Activated!");
         });
     }
 
-    function markPaid(key) { if(confirm("Confirm payment sent?")) { db.ref('withdrawals/' + key).remove(); alert("Marked as Paid."); } }
+    function submitWithdraw() {
+        const method = document.getElementById('w-method').value;
+        const accNum = document.getElementById('w-account').value;
+        const accTitle = document.getElementById('w-name').value;
+        if(!accNum || !accTitle) return alert("Fill data!");
+        db.ref('users/' + myPhone).once('value', s => {
+            const user = s.val();
+            const limit = user.firstWithdrawDone ? 1000 : 300;
+            if(user.balance < limit) return alert("Min Rs. " + limit + " needed!");
+            db.ref('users/' + myPhone).update({ balance: user.balance - limit, firstWithdrawDone: true }).then(() => {
+                db.ref('withdrawals/' + Date.now()).set({ senderPhone: myPhone, senderName: user.name, amount: limit, payMethod: method, targetAccount: accNum, targetTitle: accTitle, requestDate: new Date().toLocaleString() });
+                alert("Request Sent!");
+            });
+        });
+    }
 
     function claimProfit() {
         db.ref('users/' + myPhone).once('value', s => {
             const u = s.val(); const plan = tradeShares.find(x => x.name === u.plan);
-            if(!plan) return;
-            const percentage = (Math.random() * (5.0 - 1.0) + 1.0).toFixed(2);
-            const amt = (plan.price * (percentage / 100));
+            const amt = plan.price * ((Math.random() * 4 + 1) / 100);
             db.ref('users/' + myPhone).update({ balance: u.balance + amt, lastIncomeDate: Date.now() });
-            db.ref('users/' + myPhone + '/history').push({ type: "Daily Profit ("+percentage+"%)", amount: amt.toFixed(2), date: new Date().toLocaleDateString() });
-            alert("Success! Rs. " + amt.toFixed(2) + " added to your balance.");
-        });
-    }
-
-    function checkProfitBox(u) {
-        if(!u.plan || u.plan === "Inactive") return;
-        const last = u.lastIncomeDate || u.planActiveDate;
-        if(Date.now() - last >= 86400000) document.getElementById('claim-box').style.display = 'block';
-        else document.getElementById('claim-box').style.display = 'none';
-    }
-
-    function renderTeamList(phone) {
-        db.ref('users').once('value', snap => {
-            let h = ""; snap.forEach(c => {
-                const u = c.val();
-                if(u.referrer === phone) h += `<div style="padding:10px; border-bottom:1px solid #f0f0f0; color:#333;"><b>${u.name}</b> - ${u.plan !== 'Inactive' ? '<span style="color:green;">Active</span>' : '<span style="color:orange;">Pending</span>'}</div>`;
-            });
-            document.getElementById('team-list-ui').innerHTML = h || "No team members found.";
+            db.ref('users/' + myPhone + '/history').push({ type: "Daily Profit", amount: amt.toFixed(2), date: new Date().toLocaleDateString() });
+            alert("Munafa Collected!");
         });
     }
 
@@ -476,38 +396,41 @@
         const n = document.getElementById('reg-name').value;
         const p = document.getElementById('reg-phone').value;
         const r = document.getElementById('reg-ref').value;
-        if(!n || !p) return alert("Fill Name and Phone!");
-        db.ref('users/' + p).set({ name: n, balance: 0, plan: "Inactive", referrer: r || "" }).then(() => {
-            localStorage.setItem('inv_token', p); location.reload();
-        });
+        if(!n || !p) return alert("Fill data!");
+        db.ref('users/' + p).set({ name: n, balance: 0, plan: "Inactive", referrer: r || "", firstWithdrawDone: false }).then(() => { localStorage.setItem('inv_token', p); location.reload(); });
     }
-
     function handleLogin() {
         const p = document.getElementById('login-phone').value;
-        db.ref('users/' + p).once('value', s => {
-            if(s.exists()) { localStorage.setItem('inv_token', p); location.reload(); }
-            else alert("Account doesn't exist!");
+        db.ref('users/' + p).once('value', s => { if(s.exists()) { localStorage.setItem('inv_token', p); location.reload(); } else alert("No account found!"); });
+    }
+    function renderTeamList(ph) {
+        db.ref('users').once('value', snap => {
+            let h = ""; snap.forEach(c => { if(c.val().referrer === ph) h += `<div style="padding:5px; border-bottom:1px solid #eee; color:#333;">${c.val().name}</div>`; });
+            document.getElementById('team-list-ui').innerHTML = h || "No team yet.";
         });
     }
-
-    function triggerPayment(pName) { activeSelection = pName; document.getElementById('pay-title').innerText = pName; document.getElementById('payment-modal').style.display = 'flex'; }
+    function renderHistory(h) {
+        let html = ""; if(h) Object.values(h).reverse().forEach(x => { html += `<div style="padding:10px; border-bottom:1px solid #eee; color:#333;"><b>${x.type}</b>: Rs. ${x.amount}</div>`; });
+        document.getElementById('user-history-list').innerHTML = html || "No records.";
+    }
+    function triggerPayment(pName) { activeSelection = pName; document.getElementById('payment-modal').style.display = 'flex'; }
     function confirmPayment() { 
         const tid = document.getElementById('pay-tid').value; 
-        if(!tid) return alert("TID Required!");
+        if(!tid) return alert("Enter TID!");
         db.ref('deposits/' + Date.now()).set({ phone: myPhone, plan: activeSelection, tid: tid });
-        alert("Success! Verification ke baad investment auto-activate ho jayegi.");
-        document.getElementById('payment-modal').style.display = 'none';
+        alert("Transaction Sent!"); document.getElementById('payment-modal').style.display = 'none';
     }
-
-    function copyRef() { const link = document.getElementById('ref-link-text').innerText; navigator.clipboard.writeText(link); alert("Referral link copied!"); }
+    function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link-text').innerText); alert("Copied!"); }
     function logout() { localStorage.removeItem('inv_token'); location.reload(); }
-    function openTab(t) { document.querySelectorAll('.section').forEach(s => s.style.display = 'none'); document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active')); document.getElementById(t + '-sec').style.display = 'block'; document.getElementById('btn-' + t).classList.add('active'); }
+    function openTab(t) { 
+        document.querySelectorAll('.section').forEach(s => s.style.display = 'none'); 
+        document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(t + '-sec').style.display = 'block'; 
+        document.getElementById('btn-' + t).classList.add('active'); 
+    }
     function toggleAuth(s) { document.getElementById('signup-box').style.display = s ? 'block' : 'none'; document.getElementById('login-box').style.display = s ? 'none' : 'block'; }
     function unlockAdmin() { if(document.getElementById('admin-pass').value === "admin786") { document.getElementById('admin-gate').style.display = 'none'; document.getElementById('admin-panel').style.display = 'block'; loadAdminDashboard(); } }
-    function deleteAcc(ph) { if(confirm("Delete this user?")) db.ref('users/' + ph).remove(); }
-    function renderHistory(h) { let html = ""; if(h) Object.values(h).reverse().forEach(x => { html += `<div style="padding:15px; border-bottom:1px solid #f0f0f0; color:#222; font-size:13px;"><b>${x.type}</b><br>Amount: Rs. ${x.amount} | <small>${x.date}</small></div>`; }); document.getElementById('user-history-list').innerHTML = html || "No history yet."; }
+    function markPaid(key) { if(confirm("Paid?")) db.ref('withdrawals/' + key).remove(); }
 </script>
 </body>
 </html>
-</div>
-    
